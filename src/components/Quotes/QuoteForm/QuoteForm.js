@@ -1,9 +1,14 @@
-import React, { Fragment, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { Prompt, useHistory } from 'react-router';
+import useHttp from '../../../hooks/useHttp';
+import { addQuote } from '../../../lib/api';
 import Card from '../../UI/Card/Card';
+import Spinner from '../../UI/Spinner/Spinner';
 import classes from './QuoteForm.module.css';
 
 const QuoteForm = props => {
+
+    const { sendRequest, status } = useHttp(addQuote);
 
     const history = useHistory();
 
@@ -20,18 +25,22 @@ const QuoteForm = props => {
         setIsEntering(true);
     };
 
+    useEffect(() => {
+        if(status === 'completed') {
+            history.push('/quotes');
+        }
+    }, [status, history]);
+
     const formSubmitHandler = (event) => {
         event.preventDefault();
 
         const addedQuote = {
-            id: Math.random(),
             author: authorRef.current.value,
             quote: quoteRef.current.value
         }
 
-        console.log(addedQuote);
+        sendRequest(addedQuote);
 
-        history.push('/quotes');
     };
 
     return (
@@ -45,6 +54,9 @@ const QuoteForm = props => {
 
             <Card>
                 <form className={classes.form} onFocus={formFocusedHandler} onSubmit={formSubmitHandler}>
+                    {status === 'pending' && (<div className={classes.loading}>
+                        <Spinner />
+                    </div>)}
                     <div className={classes.control}>
                         <label htmlFor='author'>Author</label>
                         <input id='author' ref={authorRef} type='text'></input>

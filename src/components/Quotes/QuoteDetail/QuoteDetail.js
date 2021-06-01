@@ -1,52 +1,57 @@
-import React, { Fragment } from 'react';
-import { Route, useParams } from 'react-router';
+import React, { Fragment, useEffect } from 'react';
+import { Route, useParams, useRouteMatch } from 'react-router';
 import { Link } from 'react-router-dom';
-import Comments from '../../Comments/Comments';
+import useHttp from '../../../hooks/useHttp';
+import { getSingleQuote } from '../../../lib/api';
+import Comments from '../../CommentSection/Comments/Comments';
+import Spinner from '../../UI/Spinner/Spinner';
 import HighlightedQuote from '../HighlightedQuote/HighlightedQuote';
 import NoQuotesFound from '../NoQuotesFound/NoQuotesFound';
 import classes from './QuoteDetail.module.css';
 
-const DUMMY_LIST = [
-    {
-        id: 'q1',
-        author: 'yash',
-        quote: 'lorem ispsum text'
-    },
-    {
-        id: 'q2',
-        author: 'max',
-        quote: 'qnasj lorem ispsum text'
-    },
-    {
-        id: 'q3',
-        author: 'steve',
-        quote: 'qwuefgkd lorem ispsum text'
-    },
-    {
-        id: 'q4',
-        author: 'kristie',
-        quote: 'test sdksds lorem ispsum text'
-    }
-];
-
 const QuoteDetail = props => {
 
+    const { sendRequest, data: quoteItem, status, error } = useHttp(getSingleQuote, true);
+
+    const match = useRouteMatch();
     const params = useParams();
 
-    const quoteItem = DUMMY_LIST.find(item => item.id === params.quoteId);
+    const { quoteId } = params;
 
-    if (!quoteItem) {
-        return <NoQuotesFound />;
+    useEffect(() => {
+        sendRequest(quoteId);
+    }, [sendRequest, quoteId]);
+
+    if (status === 'pending') {
+        return (
+            <div>
+                <Spinner />
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <h3>
+                {error}
+            </h3>
+        );
+    }
+
+    if (status === 'completed' && !quoteItem.quote) {
+        return (
+            <NoQuotesFound />
+        );
     }
 
     return (
         <Fragment>
             <HighlightedQuote author={quoteItem.author} text={quoteItem.quote} />
-            <Route path={`/quotes/${params.quoteId}`} exact>
-                <Link className={classes.btn} to={`/quotes/${params.quoteId}/comments`}>Load comments</Link>
+            <Route path={match.url} exact>
+                <Link className={classes.btn} to={`${match.url}/comments`}>Load comments</Link>
             </Route>
-            <Route path={`/quotes/${params.quoteId}/comments`}>
-                <Comments />
+            <Route path={`${match.url}/comments`}>
+                <Comments quoteId={quoteId} />
             </Route>
         </Fragment>
     );

@@ -14,7 +14,7 @@ const NavBar = props => {
                 <ul className={classes.NavigationItems}>
                     <li className={classes.NavigationItem}>
                         <NavLink
-                            to="/"
+                            to="/quotes"
                             exact
                             activeClassName={classes.active}>All Quotes</NavLink>
                     </li>

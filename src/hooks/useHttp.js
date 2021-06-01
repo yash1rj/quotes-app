@@ -21,7 +21,8 @@ function httpReducer(state, action) {
                 status: 'completed'
             }
         
-        return state;
+        default:
+            return state;
     }
 }
 

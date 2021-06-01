@@ -19,8 +19,8 @@ const Layout = props => {
         <Fragment>
             <NavBar drawerToggleClicked={sideDrawerToggleHandler} />
             <SideDrawer
-                    open={showSideDrawer} 
-                    closed={sideDrawerClosedHandler} />
+                open={showSideDrawer} 
+                closed={sideDrawerClosedHandler} />
             <main style={{marginTop: "64px"}} className='centered'>
                 {props.children}
             </main>

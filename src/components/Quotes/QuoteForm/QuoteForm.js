@@ -59,11 +59,11 @@ const QuoteForm = props => {
                     </div>)}
                     <div className={classes.control}>
                         <label htmlFor='author'>Author</label>
-                        <input id='author' ref={authorRef} type='text'></input>
+                        <input required id='author' ref={authorRef} type='text'></input>
                     </div>
                     <div className={classes.control}>
                         <label htmlFor='quote'>Quote</label>
-                        <textarea id='quote' rows='5' ref={quoteRef} type='text'></textarea>
+                        <textarea required id='quote' rows='5' ref={quoteRef} type='text'></textarea>
                     </div>
                     <div className={classes.actions}>
                         <button onClick={finsihedEnteringHandler} className='btn'>Add Quote</button>

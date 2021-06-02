@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef} from 'react';
 import useHttp from '../../../hooks/useHttp';
 import Card from '../../UI/Card/Card';
 import classes from './NewCommentForm.module.css';
@@ -22,8 +22,11 @@ const NewCommentForm = props => {
     const formSubmitHandler = (event) => {
         event.preventDefault();
 
-        // console.log(commentRef.current.value);
-        sendRequest({ commentData: {text: commentRef.current.value}, quoteId: props.qId});
+        let inputComment = commentRef.current.value;
+        if (inputComment.trim() !== '') {
+            sendRequest({ commentData: {text: inputComment}, quoteId: props.qId});
+            event.target.reset();
+        }
     };
 
     return (
@@ -34,7 +37,7 @@ const NewCommentForm = props => {
                 </div>)}
                 <div className={classes.control}>
                     <label htmlFor='comment'>Your Comment</label>
-                    <textarea id='comment' rows='4' ref={commentRef} type='text'></textarea>
+                    <textarea required id='comment' rows='4' ref={commentRef} type='text'></textarea>
                 </div>
                 <div className={classes.actions}>
                     <button className='btn'>Add Comment</button>
